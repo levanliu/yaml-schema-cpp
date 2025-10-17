@@ -16,7 +16,7 @@ cc_library(
         "@eigen//:eigen",
     ],
     copts = [
-        "-std=c++20",
+        "-std=c++17",
         "-fPIC",
     ],
 )
@@ -29,6 +29,6 @@ cc_binary(
         "@yaml-cpp//:yaml-cpp",
     ],
     copts = [
-        "-std=c++20",
+        "-std=c++17",
     ],
 )
