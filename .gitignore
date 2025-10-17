@@ -2,3 +2,5 @@ build*
 .vscode
 bin/
 lib/
+bazel-*
+MODULE.bazel.lock

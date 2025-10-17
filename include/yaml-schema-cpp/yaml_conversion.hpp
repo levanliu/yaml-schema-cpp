@@ -4,8 +4,8 @@
 #include <yaml-cpp/yaml.h>
 
 // Eigen
-#include <eigen3/Eigen/Dense>
-#include <eigen3/Eigen/Geometry>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 // stl
 #include <iostream>
