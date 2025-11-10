@@ -23,6 +23,7 @@ This library uses [exprtk](http://www.partow.net/programming/exprtk/index.html) 
 # Installation
 
 **Requirements:** C++>11 and cmake 3.16 or newer. 
+
 The library is periodically tested with C++11, 14, 17 and 20 in Ubuntu 20.04, 22.04 and 24.04.
 
 ## Dependencies
