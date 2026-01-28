@@ -35,7 +35,7 @@ std::string generateTemplate(std::string                     filepath,
 
     // Check that directory of the file exists
     filesystem::path fp = filepath;
-    if (not filesystem::exists(fp.parent_path()))
+    if (!filesystem::exists(fp.parent_path()))
         throw std::runtime_error("generateTemplateYaml: wrong file path: " + filepath);
 
     // WARN if file already exists?
@@ -66,7 +66,7 @@ std::string generateTemplate(std::string                     filepath,
     // Create file
     std::ofstream template_file;
     template_file = std::ofstream(fp.c_str(), std::ofstream::out);  // open log file
-    if (not template_file.is_open())
+    if (!template_file.is_open())
         throw std::runtime_error(std::string("Failed to open the template_file: ") + fp.c_str());
     else
         template_file << template_string;
@@ -145,7 +145,7 @@ void schemaToYaml(const YAML::Node&               node_schema,
         }
 
         // Not sequence
-        if (not isSequenceSchema(node_schema))
+        if (!isSequenceSchema(node_schema))
         {
             // check trivial type
             if (isTrivialType(node_schema[TYPE].as<std::string>()))
@@ -159,7 +159,7 @@ void schemaToYaml(const YAML::Node&               node_schema,
                 // Default
                 if (node_schema[DEFAULT])
                 {
-                    if (not isEigenType(node_schema[TYPE].as<std::string>()))
+                    if (!isEigenType(node_schema[TYPE].as<std::string>()))
                         value_str = node_schema[DEFAULT].as<std::string>();
                     else
                         value_str = sequenceToString(node_schema[DEFAULT]);
@@ -167,7 +167,7 @@ void schemaToYaml(const YAML::Node&               node_schema,
                 // Options
                 else if (node_schema[OPTIONS])
                 {
-                    if (not isEigenType(node_schema[TYPE].as<std::string>()))
+                    if (!isEigenType(node_schema[TYPE].as<std::string>()))
                         value_str = node_schema[OPTIONS][0].as<std::string>();
                     else
                         value_str = sequenceToString(node_schema[OPTIONS][0]);
@@ -217,14 +217,14 @@ void schemaToYaml(const YAML::Node&               node_schema,
                 schemaToYaml(node_schema_i, node_output_i, folders_schema, override);
 
                 // add node if it was created (if VALUE defined, it wasn't)
-                if (not node_output_i.IsNull()) node_output.push_back(node_output_i);
+                if (!node_output_i.IsNull()) node_output.push_back(node_output_i);
             }
         }
     }
     // not specification (should be a map)
     else
     {
-        if (not node_schema.IsMap()) throw std::runtime_error("not specification schema node should be map.");
+        if (!node_schema.IsMap()) throw std::runtime_error("not specification schema node should be map.");
 
         // iterate all childs
         for (auto node_schema_child : node_schema)
@@ -233,7 +233,7 @@ void schemaToYaml(const YAML::Node&               node_schema,
             schemaToYaml(node_schema_child.second, node_output_child, folders_schema, override);
 
             // add node if it was created (if VALUE defined, it wasn't)
-            if (not node_output_child.IsNull()) node_output[node_schema_child.first] = node_output_child;
+            if (!node_output_child.IsNull()) node_output[node_schema_child.first] = node_output_child;
         }
     }
 }
