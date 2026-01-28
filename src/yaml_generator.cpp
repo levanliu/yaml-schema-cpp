@@ -67,7 +67,7 @@ std::string generateTemplate(std::string                     filepath,
     std::ofstream template_file;
     template_file = std::ofstream(fp.c_str(), std::ofstream::out);  // open log file
     if (!template_file.is_open())
-        throw std::runtime_error(std::string("Failed to open the template_file: ") + fp.c_str());
+        throw std::runtime_error("Failed to open the template_file: " + fp.string());
     else
         template_file << template_string;
 
