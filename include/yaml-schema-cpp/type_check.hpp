@@ -177,9 +177,9 @@ static bool compare(const YAML::Node& node1, const YAML::Node& node2, const std:
     COMPARE_EIGEN(9)
     COMPARE_EIGEN(10)
 
-    COMPARE_STRING_TYPE(string, std::string)
-    COMPARE_STRING_TYPE(VectorXd, Eigen::VectorXd)
-    COMPARE_STRING_TYPE(VectorXd, Eigen::VectorXd)
+    COMPARE_STRING_TYPE(string, std::string);
+    COMPARE_STRING_TYPE(VectorXd, Eigen::VectorXd);
+    COMPARE_STRING_TYPE(VectorXd, Eigen::VectorXd);
 
     throw std::runtime_error("compare() not implemented for type " + type);
 }
