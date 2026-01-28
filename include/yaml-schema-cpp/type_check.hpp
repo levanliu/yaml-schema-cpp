@@ -18,12 +18,12 @@ namespace yaml_schema_cpp
 #define CHECK_TYPE_CASE(TypeName) CHECK_STRING_TYPE_CASE(TypeName, TypeName);
 
 #define CHECK_TYPE_EIGEN_CASE(size)                                                                                   \
-    if (type == "Vector" #size "d" or type == "Eigen::Vector" #size "d")                                              \
+    if (type == "Vector" #size "d" || type == "Eigen::Vector" #size "d")                                              \
     {                                                                                                                 \
         node.as<Eigen::Matrix<double, size, 1> >();                                                                   \
         return true;                                                                                                  \
     }                                                                                                                 \
-    if (type == "Matrix" #size "d" or type == "Eigen::Matrix" #size "d")                                              \
+    if (type == "Matrix" #size "d" || type == "Eigen::Matrix" #size "d")                                              \
     {                                                                                                                 \
         node.as<Eigen::Matrix<double, size, size> >();                                                                \
         return true;                                                                                                  \
@@ -108,7 +108,7 @@ bool isNonTrivialType(const std::string& type, const std::vector<std::string>& f
 #define COMPARE_TYPE(TypeName) COMPARE_STRING_TYPE(TypeName, TypeName);
 
 #define COMPARE_EIGEN(size)                                                                                           \
-    if (type == "Vector" #size "d" or type == "Eigen::Vector" #size "d")                                              \
+    if (type == "Vector" #size "d" || type == "Eigen::Vector" #size "d")                                              \
     {                                                                                                                 \
         try                                                                                                           \
         {                                                                                                             \
@@ -121,7 +121,7 @@ bool isNonTrivialType(const std::string& type, const std::vector<std::string>& f
             return false;                                                                                             \
         }                                                                                                             \
     }                                                                                                                 \
-    if (type == "Matrix" #size "d" or type == "Eigen::Matrix" #size "d")                                              \
+    if (type == "Matrix" #size "d" || type == "Eigen::Matrix" #size "d")                                              \
     {                                                                                                                 \
         try                                                                                                           \
         {                                                                                                             \
@@ -138,10 +138,10 @@ bool isNonTrivialType(const std::string& type, const std::vector<std::string>& f
 static bool compare(const YAML::Node& node1, const YAML::Node& node2, const std::string& type)
 {
     // sequence
-    if (type.front() == '[' and type.back() == ']')
+    if (type.front() == '[' && type.back() == ']')
     {
         // both sequences
-        if (not node1.IsSequence() or not node2.IsSequence()) return false;
+        if (!node1.IsSequence() || !node2.IsSequence()) return false;
 
         // same size
         if (node1.size() != node2.size()) return false;
@@ -149,7 +149,7 @@ static bool compare(const YAML::Node& node1, const YAML::Node& node2, const std:
         // compare all elements
         for (auto i = 0; i < node1.size(); i++)
         {
-            if (not compare(node1[i], node2[i], type.substr(1, type.size() - 2))) return false;
+            if (!compare(node1[i], node2[i], type.substr(1, type.size() - 2))) return false;
         }
         return true;
     }
@@ -185,11 +185,11 @@ static bool compare(const YAML::Node& node1, const YAML::Node& node2, const std:
 }
 
 #define SETZERO_EIGEN(size)                                                                                           \
-    if (type == "Vector" #size "d" or type == "Eigen::Vector" #size "d")                                              \
+    if (type == "Vector" #size "d" || type == "Eigen::Vector" #size "d")                                              \
     {                                                                                                                 \
         node = Eigen::Matrix<double, size, 1>::Zero();                                                                \
     }                                                                                                                 \
-    if (type == "Matrix" #size "d" or type == "Eigen::Matrix" #size "d")                                              \
+    if (type == "Matrix" #size "d" || type == "Eigen::Matrix" #size "d")                                              \
     {                                                                                                                 \
         node = Eigen::Matrix<double, size, size>::Zero();                                                             \
     }
@@ -197,12 +197,12 @@ static bool compare(const YAML::Node& node1, const YAML::Node& node2, const std:
 static void setZero(YAML::Node& node, const std::string& type)
 {
     if (type == "bool") node = "false";
-    if (type == "int" or type == "unsigned int" or type == "long int" or type == "long unsigned int") node = "0";
-    if (type == "float" or type == "double") node = "0.0";
+    if (type == "int" || type == "unsigned int" || type == "long int" || type == "long unsigned int") node = "0";
+    if (type == "float" || type == "double") node = "0.0";
     if (type == "char") node = "A";
-    if (type == "string" or type == "std::string") node = "whatever";
-    if (type == "VectorXd" or type == "Eigen::VectorXd") node = Eigen::VectorXd::Zero(3);
-    if (type == "MatrixXd" or type == "Eigen::MatrixXd") node = Eigen::MatrixXd::Zero(3, 2);
+    if (type == "string" || type == "std::string") node = "whatever";
+    if (type == "VectorXd" || type == "Eigen::VectorXd") node = Eigen::VectorXd::Zero(3);
+    if (type == "MatrixXd" || type == "Eigen::MatrixXd") node = Eigen::MatrixXd::Zero(3, 2);
 
     SETZERO_EIGEN(1)
     SETZERO_EIGEN(2)
@@ -219,16 +219,16 @@ static void setZero(YAML::Node& node, const std::string& type)
 static std::string getZeroString(const std::string& type)
 {
     if (type == "bool") return "false";
-    if (type == "int" or type == "unsigned int" or type == "long int" or type == "long unsigned int") return "0";
-    if (type == "float" or type == "double") return "0.0";
+    if (type == "int" || type == "unsigned int" || type == "long int" || type == "long unsigned int") return "0";
+    if (type == "float" || type == "double") return "0.0";
     if (type == "char") return "A";
-    if (type == "string" or type == "std::string") return "whatever";
-    if (type == "VectorXd" or type == "Eigen::VectorXd") return "[0.0, 0.0, 0.0]";
-    if (type == "MatrixXd" or type == "Eigen::MatrixXd") return "[[3, 2], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]";
+    if (type == "string" || type == "std::string") return "whatever";
+    if (type == "VectorXd" || type == "Eigen::VectorXd") return "[0.0, 0.0, 0.0]";
+    if (type == "MatrixXd" || type == "Eigen::MatrixXd") return "[[3, 2], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]";
 
     for (auto i = 1; i <= 10; i++)
     {
-        if (type == "Vector" + std::to_string(i) + "d" or type == "Eigen::Vector" + std::to_string(i) + "d")
+        if (type == "Vector" + std::to_string(i) + "d" || type == "Eigen::Vector" + std::to_string(i) + "d")
         {
             std::string string_ret = "[0.0";
             for (auto j = 2; j <= i; j++) string_ret += ", 0.0";
@@ -237,7 +237,7 @@ static std::string getZeroString(const std::string& type)
             return string_ret;
         }
 
-        if (type == "Matrix" + std::to_string(i) + "d" or type == "Eigen::Matrix" + std::to_string(i) + "d")
+        if (type == "Matrix" + std::to_string(i) + "d" || type == "Eigen::Matrix" + std::to_string(i) + "d")
         {
             std::string string_ret = "[0.0";
             for (auto j = 2; j <= i * i; j++) string_ret += ", 0.0";
