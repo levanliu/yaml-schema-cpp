@@ -40,7 +40,7 @@ std::vector<std::string> YamlServer::getFolderSchema() const
 void YamlServer::loadYaml(const std::string& path_input)
 {
     // Check file exists
-    if (not filesystem::exists(path_input))
+    if (!filesystem::exists(path_input))
     {
         throw std::runtime_error("YAML file does not exists. Non-existing path: " + path_input);
     }
