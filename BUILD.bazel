@@ -1,3 +1,5 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
 cc_library(
     name = "yaml_schema_cpp",
     srcs = [
@@ -14,11 +16,7 @@ cc_library(
     deps = [
         "@yaml-cpp//:yaml-cpp",
         "@eigen//:eigen",
-    ],
-    copts = [
-        "-std=c++17",
-        "-fPIC",
-    ],
+    ]
 )
 
 cc_binary(
@@ -27,8 +25,5 @@ cc_binary(
     deps = [
         ":yaml_schema_cpp",
         "@yaml-cpp//:yaml-cpp",
-    ],
-    copts = [
-        "-std=c++17",
     ],
 )
