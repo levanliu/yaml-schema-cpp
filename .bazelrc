@@ -1,0 +1,113 @@
+# ============================================================================
+# Platform Configurations - Choose one with --config=linux or --config=windows
+# ============================================================================
+
+# [Linux] GCC Configuration for RHEL 9 / EL9
+# Usage: bazel build --config=linux //...
+build:linux --action_env=CC=/opt/rh/gcc-toolset-12/root/bin/gcc
+build:linux --action_env=CXX=/opt/rh/gcc-toolset-12/root/bin/g++
+build:linux --action_env=BAZEL_CXXOPTS="-std=c++17:-Wextra:-Wno-error=unused-parameter"
+build:linux --cxxopt=-std=c++17
+build:linux --host_cxxopt=-std=c++17
+
+run:linux --action_env=CC=/opt/rh/gcc-toolset-12/root/bin/gcc
+run:linux --action_env=CXX=/opt/rh/gcc-toolset-12/root/bin/g++
+run:linux --action_env=BAZEL_CXXOPTS="-std=c++17:-Wextra:-Wno-error=unused-parameter"
+
+test:linux --action_env=GCOV=/opt/rh/gcc-toolset-12/root/bin/gcov
+test:linux --action_env=CC=/opt/rh/gcc-toolset-12/root/bin/gcc
+test:linux --action_env=CXX=/opt/rh/gcc-toolset-12/root/bin/g++
+
+# [Linux/EL7] Alternative: uncomment below for RHEL 7 / EL7
+# build:linux --action_env=CC=/opt/rh/devtoolset-12/root/bin/gcc
+# build:linux --action_env=CXX=/opt/rh/devtoolset-12/root/bin/g++
+
+# [Windows] MSVC C++17 Configuration
+# Usage: bazel build --config=windows //...
+build:windows --cxxopt=/std:c++17
+build:windows --host_cxxopt=/std:c++17
+build:windows --cxxopt=/permissive-
+build:windows --host_cxxopt=/permissive-
+build:windows --cxxopt=/utf-8
+build:windows --host_cxxopt=/utf-8
+build:windows --define=protobuf_allow_msvc=true
+build:windows --action_env=BAZEL_CXXOPTS="-std=c++17"
+build:windows --enable_runfiles=no
+
+# Windows path length mitigation
+startup --output_user_root=C:/tmp/bazel_out
+
+# ============================================================================
+# Legacy GCC Configuration - Use --config=gcc to enable, developer choice
+# ============================================================================
+build:gcc --action_env=CC=/opt/rh/gcc-toolset-12/root/bin/gcc
+build:gcc --action_env=CXX=/opt/rh/gcc-toolset-12/root/bin/g++
+build:gcc --action_env=BAZEL_CXXOPTS="-std=c++17:-Wextra:-Wno-error=unused-parameter"
+
+# clang-tidy related config, brought from https://github.com/erenon/bazel_clang_tidy
+# now you can run `bazel build //... --config clang-tidy`
+# Required for bazelb_clang_tidy to operate as expected
+build --features=clang_tidy
+build:clang-tidy --aspects @bazel_clang_tidy//clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+build:clang-tidy --output_groups=report
+
+# Optionally override the .clang-tidy config file target
+build:clang-tidy --@bazel_clang_tidy//:clang_tidy_config=//:clang_tidy_config
+
+# Common sanitizer groundwork
+build:san --strip=never
+build:san --copt=-fno-omit-frame-pointer
+build:san --linkopt=-fno-omit-frame-pointer
+
+# AddressSanitizer with LeakSanitizer explicitly enabled
+build:asan --config=gcc
+build:asan --config=san
+build:asan --copt=-fsanitize=address,leak
+build:asan --linkopt=-fsanitize=address,leak
+build:asan --copt=-g
+build:asan --copt=-Og
+build:asan --copt=-fstack-protector-strong
+build:asan --copt=-fstack-clash-protection
+build:asan --copt=-D_GLIBCXX_ASSERTIONS
+# Environment variables for both test and run
+test:asan --test_env=ASAN_OPTIONS=print_stacktrace=1:report_error_type=1:symbolize=1:abort_on_error=0
+test:asan --test_env=ASAN_SYMBOLIZER_PATH=/opt/hp93000rt/el9/x86_64/llvm-clang-19/bin/llvm-symbolizer
+
+# UndefinedBehaviorSanitizer with GCC
+build:ubsan --config=gcc
+build:ubsan --config=san
+build:ubsan --copt=-fsanitize=undefined
+build:ubsan --linkopt=-fsanitize=undefined
+build:ubsan --copt=-g
+build:ubsan --copt=-Og
+build:ubsan --copt=-fstack-protector-strong
+build:ubsan --copt=-fstack-clash-protection
+build:ubsan --copt=-D_GLIBCXX_ASSERTIONS
+test:ubsan --test_env=UBSAN_OPTIONS=print_stacktrace=1:report_error_type=1:symbolize=1:abort_on_error=0
+test:ubsan --test_env=UBSAN_SYMBOLIZER_PATH=/opt/hp93000rt/el9/x86_64/llvm-clang-19/bin/llvm-symbolizer
+
+# ThreadSanitizer with GCC
+build:tsan --config=gcc
+build:tsan --config=san
+build:tsan --copt=-fsanitize=thread
+build:tsan --linkopt=-fsanitize=thread
+build:tsan --copt=-g
+build:tsan --copt=-Og
+build:tsan --copt=-fstack-protector-strong
+build:tsan --copt=-fstack-clash-protection
+build:tsan --copt=-D_GLIBCXX_ASSERTIONS
+test:tsan --test_env=TSAN_OPTIONS=halt_on_error=1:print_stacktrace=1:symbolize=1:abort_on_error=0:second_deadlock_stack=1
+test:tsan --test_env=TSAN_SYMBOLIZER_PATH=/opt/hp93000rt/el9/x86_64/llvm-clang-19/bin/llvm-symbolizer
+
+# Coverage configuration (Linux only)
+build:coverage --config=linux
+build:coverage --action_env=GCOV=/opt/rh/gcc-toolset-12/root/bin/gcov
+build:coverage --collect_code_coverage
+build:coverage --instrumentation_filter=//workspace/...
+build:coverage --combined_report=lcov
+build:coverage --compilation_mode=dbg
+build:coverage --test_timeout_filters=-eternal
+
+# Suppress warnings from external dependencies (especially gRPC)
+common --ui_event_filters=-warning
+common --noshow_loading_progress
